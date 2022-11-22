@@ -6,53 +6,52 @@ namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class ProductsController : ControllerBase
 {
-    private readonly UsersService _usersService;
+    private readonly ProductsService _productsService;
 
-    public UsersController(UsersService usersService) =>
-        _usersService = usersService;
+    public ProductsController(ProductsService productsService) =>
+        _productsService = productsService;
 
     [HttpGet]
-    public async Task<List<User>> Get() =>
-        await _usersService.GetAsync();
+    public async Task<List<Product>> Get() =>
+        await _productsService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<User>> Get(string id)
+    public async Task<ActionResult<Product>> Get(string id)
     {
-        var user = await _usersService.GetAsync(id);
+        var product = await _productsService.GetAsync(id);
 
-        if (user is null)
+        if (product is null)
         {
             return NotFound();
         }
 
-        return user;
+        return product;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(User newUser)
+    public async Task<IActionResult> Post(Product newProduct)
     {
-        //Iota message
         
-        await _usersService.CreateAsync(newUser);
+        await _productsService.CreateAsync(newProduct);
 
-        return CreatedAtAction(nameof(Get), new { id = newUser.UserId }, newUser);
+        return CreatedAtAction(nameof(Get), new { id = newProduct.ProductId }, newProduct);
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, User updatedUser)
+    public async Task<IActionResult> Update(string id, Product updatedProduct)
     {
-        var user = await _usersService.GetAsync(id);
+        var product = await _productsService.GetAsync(id);
 
-        if (user is null)
+        if (product is null)
         {
             return NotFound();
         }
 
-        updatedUser.UserId = user.UserId;
+        updatedProduct.ProductId = product.ProductId;
 
-        await _usersService.UpdateAsync(id, updatedUser);
+        await _productsService.UpdateAsync(id, updatedProduct);
 
         return NoContent();
     }
@@ -60,14 +59,14 @@ public class UsersController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var user = await _usersService.GetAsync(id);
+        var product = await _productsService.GetAsync(id);
 
-        if (user is null)
+        if (product is null)
         {
             return NotFound();
         }
 
-        await _usersService.RemoveAsync(id);
+        await _productsService.RemoveAsync(id);
 
         return NoContent();
     }

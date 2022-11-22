@@ -3,25 +3,18 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ProteinApi.Models;
 
-public class Transaction
+public class User
 {
-    //Trasaction details
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? TransactionID { get; set; }
+    public string UserId { get; set; } = null!;
 
-    public int MessageID { get; set; }
+    public string UserType { get; set; } = null!; //Farm, Bakery, Distribution Centre
 
-    public int TransactionType { get; set; }
+    public string UserName { get; set; } = null!;
 
-    public int ProductID { get; set; }
+    public string? Address { get; set; }
 
-    public double Quantity { get; set; } 
-    
+    public Tag[]? Info { get; set; }
 
-    //Time and location of transaction
-    public DateTime Date { get; set; }
-
-    public string? GpsCoordinates { get; set;}
-    
 }

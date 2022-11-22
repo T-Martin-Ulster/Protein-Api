@@ -33,7 +33,6 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(User newUser)
     {
-        //Iota message
         
         await _usersService.CreateAsync(newUser);
 

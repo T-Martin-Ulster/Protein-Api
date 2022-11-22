@@ -3,25 +3,37 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ProteinApi.Models;
 
-public class Transaction
+public class Product
 {
-    //Trasaction details
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? TransactionID { get; set; }
+    public string ProductId { get; set; } = null!;
 
-    public int MessageID { get; set; }
+    //Product details
+    public string OwnerId { get; set; } = null!;
 
-    public int TransactionType { get; set; }
+    public string ProductName { get; set; } = null!; //Weetabix
 
-    public int ProductID { get; set; }
+    public string ProductType { get; set; } = null!; //Cereal
 
     public double Quantity { get; set; } 
-    
 
-    //Time and location of transaction
+    public string QuanityType { get; set; } = null!; //No OR Kg
+
+    public Ingredient[]? Ingredients { get; set; } //Array of ProductIds & Quantitys
+
+    public bool Status { get; set; } //Active?
+
+    public Tag[]? Info { get; set; }
+
+    public string? TransactionId { get; set; } //Source
+
+    //Time and location of creation
     public DateTime Date { get; set; }
 
     public string? GpsCoordinates { get; set;}
+
+    //IOTA message
+    public string MessageId { get; set; } = null!; //Orgional, defined during product creation
     
 }

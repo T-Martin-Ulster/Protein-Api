@@ -1,12 +1,10 @@
 
 namespace ProteinApi.Models;
 
-public class Tag
+public class Ingredient
 {
-    public string TagType { get; set; } = null!; //Quality standard OR Production value
+    public string ProductId { get; set; } = null!; 
 
-    public string Name { get; set; } = null!; //Red-Tractor, Organic OR 'Busisness CO2 (Kg/y)', 'Fertilizer (Kg/Acre)'
-
-    public double? Value { get; set; }
+    public double Quantity { get; set; }
 
 }

@@ -1,6 +1,13 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using ProteinApi.Services;
+using ProteinApi.Models;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<ProteinIDatabaseSettings>(
+    builder.Configuration.GetSection("ProteinIDatabase"));
+
+builder.Services.AddSingleton<TransactionsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
