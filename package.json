@@ -1,0 +1,7 @@
+{
+  "name": "Protein-Api",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "@iota/client": "^3.0.0-rc.4"
+  }
+}
