@@ -8,43 +8,45 @@ using Microsoft.Extensions.Configuration;
 
 namespace ProteinApi.Controllers;
 
+//Hello
+
 [ApiController]
 [Route("api/[controller]")]
-public class ProduceController : ControllerBase
+public class ProduceTransactionController : ControllerBase
 {
-    private readonly ProduceService _produceService;
+    private readonly ProduceTransactionService _produceTransactionService;
 
-    public ProduceController(ProduceService produceService) =>
-        _produceService = produceService;
+    public ProduceTransactionController(ProduceTransactionService produceTransactionService) =>
+        _produceTransactionService = produceTransactionService;
 
     [HttpGet]
-    public async Task<List<Produce>> Get() =>
-        await _produceService.GetAsync();
+    public async Task<List<ProduceTransaction>> Get() =>
+        await _produceTransactionService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Produce>> Get(string id)
+    public async Task<ActionResult<ProduceTransaction>> Get(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var produceTransaction = await _produceTransactionService.GetAsync(id);
 
-        if (produce is null)
+        if (produceTransaction is null)
         {
             return NotFound();
         }
 
-        return produce;
+        return produceTransaction;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Produce newProduce)
+    public async Task<IActionResult> Post(ProduceTransaction newProduceTransaction)
     {
 
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduceTransaction);
 
         string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
 
         string tangelPath = Globals.tanglePath;
 
-        string cParams = tangelPath + " " + "Produce" + " " + json;
+        string cParams = tangelPath + " " + "ProduceTransaction" + " " + json;
 
         //Runs Exe file
         var proc = new Process();
@@ -63,11 +65,11 @@ public class ProduceController : ControllerBase
 
         if (output != null)
         {
-            newProduce.MessageId = output;
+            newProduceTransaction.MessageId = output;
 
-            await _produceService.CreateAsync(newProduce);
+            await _produceTransactionService.CreateAsync(newProduceTransaction);
 
-            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
+            return CreatedAtAction(nameof(Get), new { id = newProduceTransaction.ProduceTransactionId }, newProduceTransaction);
 
         }
 
@@ -76,18 +78,18 @@ public class ProduceController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Produce updatedProduce)
+    public async Task<IActionResult> Update(string id, ProduceTransaction updatedProduceTransaction)
     {
-        var produce = await _produceService.GetAsync(id);
+        var produceTransaction = await _produceTransactionService.GetAsync(id);
 
-        if (produce is null)
+        if (produceTransaction is null)
         {
             return NotFound();
         }
 
-        updatedProduce.ProduceId = produce.ProduceId;
+        updatedProduceTransaction.ProduceTransactionId = produceTransaction.ProduceTransactionId;
 
-        await _produceService.UpdateAsync(id, updatedProduce);
+        await _produceTransactionService.UpdateAsync(id, updatedProduceTransaction);
 
         return NoContent();
     }
@@ -95,14 +97,14 @@ public class ProduceController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var produceTransaction = await _produceTransactionService.GetAsync(id);
 
-        if (produce is null)
+        if (produceTransaction is null)
         {
             return NotFound();
         }
 
-        await _produceService.RemoveAsync(id);
+        await _produceTransactionService.RemoveAsync(id);
 
         return NoContent();
     }

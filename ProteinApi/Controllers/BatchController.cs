@@ -10,41 +10,41 @@ namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProduceController : ControllerBase
+public class BatchController : ControllerBase
 {
-    private readonly ProduceService _produceService;
+    private readonly BatchService _batchService;
 
-    public ProduceController(ProduceService produceService) =>
-        _produceService = produceService;
+    public BatchController(BatchService batchService) =>
+        _batchService = batchService;
 
     [HttpGet]
-    public async Task<List<Produce>> Get() =>
-        await _produceService.GetAsync();
+    public async Task<List<Batch>> Get() =>
+        await _batchService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Produce>> Get(string id)
+    public async Task<ActionResult<Batch>> Get(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var batch = await _batchService.GetAsync(id);
 
-        if (produce is null)
+        if (batch is null)
         {
             return NotFound();
         }
 
-        return produce;
+        return batch;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Produce newProduce)
+    public async Task<IActionResult> Post(Batch newBatch)
     {
 
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newBatch);
 
         string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
 
         string tangelPath = Globals.tanglePath;
 
-        string cParams = tangelPath + " " + "Produce" + " " + json;
+        string cParams = tangelPath + " " + "Batch" + " " + json;
 
         //Runs Exe file
         var proc = new Process();
@@ -63,11 +63,11 @@ public class ProduceController : ControllerBase
 
         if (output != null)
         {
-            newProduce.MessageId = output;
+            newBatch.MessageId = output;
 
-            await _produceService.CreateAsync(newProduce);
+            await _batchService.CreateAsync(newBatch);
 
-            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
+            return CreatedAtAction(nameof(Get), new { id = newBatch.BatchId }, newBatch);
 
         }
 
@@ -76,18 +76,18 @@ public class ProduceController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Produce updatedProduce)
+    public async Task<IActionResult> Update(string id, Batch updatedBatch)
     {
-        var produce = await _produceService.GetAsync(id);
+        var batch = await _batchService.GetAsync(id);
 
-        if (produce is null)
+        if (batch is null)
         {
             return NotFound();
         }
 
-        updatedProduce.ProduceId = produce.ProduceId;
+        updatedBatch.BatchId = batch.BatchId;
 
-        await _produceService.UpdateAsync(id, updatedProduce);
+        await _batchService.UpdateAsync(id, updatedBatch);
 
         return NoContent();
     }
@@ -95,14 +95,14 @@ public class ProduceController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var batch = await _batchService.GetAsync(id);
 
-        if (produce is null)
+        if (batch is null)
         {
             return NotFound();
         }
 
-        await _produceService.RemoveAsync(id);
+        await _batchService.RemoveAsync(id);
 
         return NoContent();
     }

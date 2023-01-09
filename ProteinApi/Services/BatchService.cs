@@ -4,11 +4,11 @@ using MongoDB.Driver;
 
 namespace ProteinApi.Services;
 
-public class ProduceService
+public class BatchService
 {
-    private readonly IMongoCollection<Produce> _produceCollection;
+    private readonly IMongoCollection<Batch> _batchCollection;
 
-    public ProduceService(
+    public BatchService(
         IOptions<ProteinIDatabaseSettings> proteinIDatabaseSettings)
     {
         var mongoClient = new MongoClient(
@@ -17,24 +17,24 @@ public class ProduceService
         var mongoDatabase = mongoClient.GetDatabase(
             proteinIDatabaseSettings.Value.DatabaseName);
 
-        _produceCollection = mongoDatabase.GetCollection<Produce>(
-            proteinIDatabaseSettings.Value.ProduceCollectionName);
+        _batchCollection = mongoDatabase.GetCollection<Batch>(
+            proteinIDatabaseSettings.Value.BatchCollectionName);
     }
 
-    public async Task<List<Produce>> GetAsync() =>
-        await _produceCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Batch>> GetAsync() =>
+        await _batchCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Produce?> GetAsync(string id) =>
-        await _produceCollection.Find(x => x.ProduceId == id).FirstOrDefaultAsync();
+    public async Task<Batch?> GetAsync(string id) =>
+        await _batchCollection.Find(x => x.BatchId == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Produce newProduce) =>
-        await _produceCollection.InsertOneAsync(newProduce);
+    public async Task CreateAsync(Batch newBatch) =>
+        await _batchCollection.InsertOneAsync(newBatch);
 
-    public async Task UpdateAsync(string id, Produce updatedProduce) =>
-        await _produceCollection.ReplaceOneAsync(x => x.ProduceId == id, updatedProduce);
+    public async Task UpdateAsync(string id, Batch updatedBatch) =>
+        await _batchCollection.ReplaceOneAsync(x => x.BatchId == id, updatedBatch);
 
     public async Task RemoveAsync(string id) =>
-        await _produceCollection.DeleteOneAsync(x => x.ProduceId == id);
+        await _batchCollection.DeleteOneAsync(x => x.BatchId == id);
 }
 
 

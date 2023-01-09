@@ -4,11 +4,11 @@ using MongoDB.Driver;
 
 namespace ProteinApi.Services;
 
-public class ProduceService
+public class TransactionRequestService
 {
-    private readonly IMongoCollection<Produce> _produceCollection;
+    private readonly IMongoCollection<TransactionRequest> _transactionRequestCollection;
 
-    public ProduceService(
+    public TransactionRequestService(
         IOptions<ProteinIDatabaseSettings> proteinIDatabaseSettings)
     {
         var mongoClient = new MongoClient(
@@ -17,24 +17,24 @@ public class ProduceService
         var mongoDatabase = mongoClient.GetDatabase(
             proteinIDatabaseSettings.Value.DatabaseName);
 
-        _produceCollection = mongoDatabase.GetCollection<Produce>(
-            proteinIDatabaseSettings.Value.ProduceCollectionName);
+        _transactionRequestCollection = mongoDatabase.GetCollection<TransactionRequest>(
+            proteinIDatabaseSettings.Value.TransactionRequestCollectionName);
     }
 
-    public async Task<List<Produce>> GetAsync() =>
-        await _produceCollection.Find(_ => true).ToListAsync();
+    public async Task<List<TransactionRequest>> GetAsync() =>
+        await _transactionRequestCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Produce?> GetAsync(string id) =>
-        await _produceCollection.Find(x => x.ProduceId == id).FirstOrDefaultAsync();
+    public async Task<TransactionRequest?> GetAsync(string id) =>
+        await _transactionRequestCollection.Find(x => x.TransactionRequestId == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Produce newProduce) =>
-        await _produceCollection.InsertOneAsync(newProduce);
+    public async Task CreateAsync(TransactionRequest newTransactionRequest) =>
+        await _transactionRequestCollection.InsertOneAsync(newTransactionRequest);
 
-    public async Task UpdateAsync(string id, Produce updatedProduce) =>
-        await _produceCollection.ReplaceOneAsync(x => x.ProduceId == id, updatedProduce);
+    public async Task UpdateAsync(string id, TransactionRequest updatedTransactionRequest) =>
+        await _transactionRequestCollection.ReplaceOneAsync(x => x.TransactionRequestId == id, updatedTransactionRequest);
 
     public async Task RemoveAsync(string id) =>
-        await _produceCollection.DeleteOneAsync(x => x.ProduceId == id);
+        await _transactionRequestCollection.DeleteOneAsync(x => x.TransactionRequestId == id);
 }
 
 

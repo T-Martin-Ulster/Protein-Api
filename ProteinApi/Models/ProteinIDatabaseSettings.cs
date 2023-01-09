@@ -6,11 +6,17 @@ public class ProteinIDatabaseSettings
 
     public string DatabaseName { get; set;} = null!;
 
-    public string TransactionsCollectionName { get; set;} = null!;
+    public string ProduceCollectionName { get; set;} = null!;
 
-    public string ProductsCollectionName { get; set; } = null!;
+    public string BatchCollectionName { get; set; } = null!;
 
-    public string UsersCollectionName { get; set; } = null!;
+    public string ProduceTransactionCollectionName { get; set; } = null!;
+
+    public string TransactionRequestCollectionName { get; set; } = null!;
+
+    public string FieldCollectionName { get; set; } = null!;
+
+    public string BusinessCollectionName { get; set; } = null!;
 
 }
 

@@ -4,44 +4,23 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ProteinApi.Models;
 
-public class Batch
+public class Business
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? BatchId { get; set; }
+    public string BusinessId { get; set; } = null!;
 
-    public DateTime BatchDate { get; set; }
+    public string UserPassword { get; set; } = null!;
 
-    public string OwnerId { get; set; } = null!;
+    public string BusinessType { get; set; } = null!; //Farm, Bakery, Distribution Centre
 
-    public bool InStock { get; set; }
+    public string Name { get; set; } = null!;
 
+    public string Decription { get; set; } = null!;
 
-    //Produce
-    public bool Mixed { get; set; }
+    public string GpsCoordinates { get; set; } = null!;
 
-    public string ProduceType { get; set; } = null!;
+    //todo STANDARDS
 
-    public double Quantity { get; set; } //No.
-
-    public double Weight { get; set; } //Kg
-
-
-    public string? ProduceMsg { get; set; } //Not-Mixed
-
-    public string[]? BatchMsg { get; set; } //Mixed
-
-
-    //Traceability
-    public string MessageId { get; set; } = null!;
-
-    public string? TransactionMsg { get; set; }
-
-
-    //Default value
-    public Batch()
-    {
-        InStock = true;
-    }
-
+    //IOTA message
+    public string? MessageId { get; set; } = null!;
 }

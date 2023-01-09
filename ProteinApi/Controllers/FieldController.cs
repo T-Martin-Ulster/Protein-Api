@@ -10,41 +10,41 @@ namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProduceController : ControllerBase
+public class FieldController : ControllerBase
 {
-    private readonly ProduceService _produceService;
+    private readonly FieldService _fieldService;
 
-    public ProduceController(ProduceService produceService) =>
-        _produceService = produceService;
+    public FieldController(FieldService fieldService) =>
+        _fieldService = fieldService;
 
     [HttpGet]
-    public async Task<List<Produce>> Get() =>
-        await _produceService.GetAsync();
+    public async Task<List<Field>> Get() =>
+        await _fieldService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Produce>> Get(string id)
+    public async Task<ActionResult<Field>> Get(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var field = await _fieldService.GetAsync(id);
 
-        if (produce is null)
+        if (field is null)
         {
             return NotFound();
         }
 
-        return produce;
+        return field;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Produce newProduce)
+    public async Task<IActionResult> Post(Field newField)
     {
 
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newField);
 
         string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
 
         string tangelPath = Globals.tanglePath;
 
-        string cParams = tangelPath + " " + "Produce" + " " + json;
+        string cParams = tangelPath + " " + "Field" + " " + json;
 
         //Runs Exe file
         var proc = new Process();
@@ -63,11 +63,11 @@ public class ProduceController : ControllerBase
 
         if (output != null)
         {
-            newProduce.MessageId = output;
+            newField.MessageId = output;
 
-            await _produceService.CreateAsync(newProduce);
+            await _fieldService.CreateAsync(newField);
 
-            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
+            return CreatedAtAction(nameof(Get), new { id = newField.FieldId }, newField);
 
         }
 
@@ -76,18 +76,18 @@ public class ProduceController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Produce updatedProduce)
+    public async Task<IActionResult> Update(string id, Field updatedField)
     {
-        var produce = await _produceService.GetAsync(id);
+        var field = await _fieldService.GetAsync(id);
 
-        if (produce is null)
+        if (field is null)
         {
             return NotFound();
         }
 
-        updatedProduce.ProduceId = produce.ProduceId;
+        updatedField.FieldId = field.FieldId;
 
-        await _produceService.UpdateAsync(id, updatedProduce);
+        await _fieldService.UpdateAsync(id, updatedField);
 
         return NoContent();
     }
@@ -95,14 +95,14 @@ public class ProduceController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var field = await _fieldService.GetAsync(id);
 
-        if (produce is null)
+        if (field is null)
         {
             return NotFound();
         }
 
-        await _produceService.RemoveAsync(id);
+        await _fieldService.RemoveAsync(id);
 
         return NoContent();
     }

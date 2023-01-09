@@ -7,7 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<ProteinIDatabaseSettings>(
     builder.Configuration.GetSection("ProteinIDatabase"));
 
-builder.Services.AddSingleton<TransactionsService>();
+builder.Services.AddSingleton<ProduceTransactionService>();
+builder.Services.AddSingleton<TransactionRequestService>();
+builder.Services.AddSingleton<BatchService>();
+builder.Services.AddSingleton<BusinessService>();
+builder.Services.AddSingleton<FieldService>();
+builder.Services.AddSingleton<ProduceService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

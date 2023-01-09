@@ -10,84 +10,53 @@ namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProduceController : ControllerBase
+public class TransactionRequestController : ControllerBase
 {
-    private readonly ProduceService _produceService;
+    private readonly TransactionRequestService _transactionRequestService;
 
-    public ProduceController(ProduceService produceService) =>
-        _produceService = produceService;
+    public TransactionRequestController(TransactionRequestService transactionRequestService) =>
+        _transactionRequestService = transactionRequestService;
 
     [HttpGet]
-    public async Task<List<Produce>> Get() =>
-        await _produceService.GetAsync();
+    public async Task<List<TransactionRequest>> Get() =>
+        await _transactionRequestService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Produce>> Get(string id)
+    public async Task<ActionResult<TransactionRequest>> Get(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var transactionRequest = await _transactionRequestService.GetAsync(id);
 
-        if (produce is null)
+        if (transactionRequest is null)
         {
             return NotFound();
         }
 
-        return produce;
+        return transactionRequest;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Produce newProduce)
+    public async Task<IActionResult> Post(TransactionRequest newTransactionRequest)
     {
 
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
+           await _transactionRequestService.CreateAsync(newTransactionRequest);
 
-        string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
+           return CreatedAtAction(nameof(Get), new { id = newTransactionRequest.TransactionRequestId }, newTransactionRequest);
 
-        string tangelPath = Globals.tanglePath;
-
-        string cParams = tangelPath + " " + "Produce" + " " + json;
-
-        //Runs Exe file
-        var proc = new Process();
-
-        proc.StartInfo.RedirectStandardOutput = true;
-
-        proc.StartInfo.UseShellExecute = false;
-
-        proc.StartInfo.FileName = filename;
-
-        proc.StartInfo.Arguments = cParams;
-
-        proc.Start();
-
-        var output = proc.StandardOutput.ReadLine();
-
-        if (output != null)
-        {
-            newProduce.MessageId = output;
-
-            await _produceService.CreateAsync(newProduce);
-
-            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
-
-        }
-
-        return StatusCode(500, "Tangle not responding");
-        
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Produce updatedProduce)
+    public async Task<IActionResult> Update(string id, TransactionRequest updatedTransactionRequest)
     {
-        var produce = await _produceService.GetAsync(id);
+        var transactionRequest = await _transactionRequestService.GetAsync(id);
 
-        if (produce is null)
+        if (transactionRequest is null)
         {
             return NotFound();
         }
 
-        updatedProduce.ProduceId = produce.ProduceId;
+        updatedTransactionRequest.TransactionRequestId = transactionRequest.TransactionRequestId;
 
-        await _produceService.UpdateAsync(id, updatedProduce);
+        await _transactionRequestService.UpdateAsync(id, updatedTransactionRequest);
 
         return NoContent();
     }
@@ -95,14 +64,14 @@ public class ProduceController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var transactionRequest = await _transactionRequestService.GetAsync(id);
 
-        if (produce is null)
+        if (transactionRequest is null)
         {
             return NotFound();
         }
 
-        await _produceService.RemoveAsync(id);
+        await _transactionRequestService.RemoveAsync(id);
 
         return NoContent();
     }

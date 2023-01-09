@@ -4,47 +4,49 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.IO;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TransactionsController : ControllerBase
+public class ProduceController : ControllerBase
 {
-    private readonly TransactionsService _transactionsService;
+    private readonly ProduceService _produceService;
 
-    public TransactionsController(TransactionsService transactionsService) =>
-        _transactionsService = transactionsService;
+    public ProduceController(ProduceService produceService) =>
+        _produceService = produceService;
 
     [HttpGet]
-    public async Task<List<Transaction>> Get() =>
-        await _transactionsService.GetAsync();
+    public async Task<List<Produce>> Get() =>
+        await _produceService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Transaction>> Get(string id)
+    public async Task<ActionResult<Produce>> Get(string id)
     {
-        var transaction = await _transactionsService.GetAsync(id);
+        var produce = await _produceService.GetAsync(id);
 
-        if (transaction is null)
+        if (produce is null)
         {
             return NotFound();
         }
 
-        return transaction;
+        return produce;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Transaction newTransaction)
+    public async Task<IActionResult> Post(Produce newProduce)
     {
 
-        //Iota message
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newTransaction);
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
 
         string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
 
-        //todo Move path tp appsettings
-        string cParams = "http://localhost:14266" + " " + "Transactions" + " " + json;
+        string tangelPath = Globals.tanglePath;
 
+        string cParams = tangelPath + " " + "Produce" + " " + json;
+
+        //Runs Exe file
         var proc = new Process();
 
         proc.StartInfo.RedirectStandardOutput = true;
@@ -61,11 +63,11 @@ public class TransactionsController : ControllerBase
 
         if (output != null)
         {
-            newTransaction.MessageId = output;
+            newProduce.MessageId = output;
 
-            await _transactionsService.CreateAsync(newTransaction);
+            await _produceService.CreateAsync(newProduce);
 
-            return CreatedAtAction(nameof(Get), new { id = newTransaction.TransactionId }, newTransaction);
+            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
 
         }
 
@@ -74,18 +76,18 @@ public class TransactionsController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Transaction updatedTransaction)
+    public async Task<IActionResult> Update(string id, Produce updatedProduce)
     {
-        var transaction = await _transactionsService.GetAsync(id);
+        var produce = await _produceService.GetAsync(id);
 
-        if (transaction is null)
+        if (produce is null)
         {
             return NotFound();
         }
 
-        updatedTransaction.TransactionId = transaction.TransactionId;
+        updatedProduce.ProduceId = produce.ProduceId;
 
-        await _transactionsService.UpdateAsync(id, updatedTransaction);
+        await _produceService.UpdateAsync(id, updatedProduce);
 
         return NoContent();
     }
@@ -93,14 +95,14 @@ public class TransactionsController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var transaction = await _transactionsService.GetAsync(id);
+        var produce = await _produceService.GetAsync(id);
 
-        if (transaction is null)
+        if (produce is null)
         {
             return NotFound();
         }
 
-        await _transactionsService.RemoveAsync(id);
+        await _produceService.RemoveAsync(id);
 
         return NoContent();
     }

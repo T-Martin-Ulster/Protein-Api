@@ -4,11 +4,11 @@ using MongoDB.Driver;
 
 namespace ProteinApi.Services;
 
-public class ProduceService
+public class FieldService
 {
-    private readonly IMongoCollection<Produce> _produceCollection;
+    private readonly IMongoCollection<Field> _fieldCollection;
 
-    public ProduceService(
+    public FieldService(
         IOptions<ProteinIDatabaseSettings> proteinIDatabaseSettings)
     {
         var mongoClient = new MongoClient(
@@ -17,24 +17,24 @@ public class ProduceService
         var mongoDatabase = mongoClient.GetDatabase(
             proteinIDatabaseSettings.Value.DatabaseName);
 
-        _produceCollection = mongoDatabase.GetCollection<Produce>(
-            proteinIDatabaseSettings.Value.ProduceCollectionName);
+        _fieldCollection = mongoDatabase.GetCollection<Field>(
+            proteinIDatabaseSettings.Value.FieldCollectionName);
     }
 
-    public async Task<List<Produce>> GetAsync() =>
-        await _produceCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Field>> GetAsync() =>
+        await _fieldCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Produce?> GetAsync(string id) =>
-        await _produceCollection.Find(x => x.ProduceId == id).FirstOrDefaultAsync();
+    public async Task<Field?> GetAsync(string id) =>
+        await _fieldCollection.Find(x => x.FieldId == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Produce newProduce) =>
-        await _produceCollection.InsertOneAsync(newProduce);
+    public async Task CreateAsync(Field newField) =>
+        await _fieldCollection.InsertOneAsync(newField);
 
-    public async Task UpdateAsync(string id, Produce updatedProduce) =>
-        await _produceCollection.ReplaceOneAsync(x => x.ProduceId == id, updatedProduce);
+    public async Task UpdateAsync(string id, Field updatedField) =>
+        await _fieldCollection.ReplaceOneAsync(x => x.FieldId == id, updatedField);
 
     public async Task RemoveAsync(string id) =>
-        await _produceCollection.DeleteOneAsync(x => x.ProduceId == id);
+        await _fieldCollection.DeleteOneAsync(x => x.FieldId == id);
 }
 
 

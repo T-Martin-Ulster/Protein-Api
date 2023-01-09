@@ -1,26 +1,12 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ProteinApi.Models;
+namespace ProteinApi.Structs;
 
-public class Produce
+public struct Standard
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? ProduceId { get; set; }
+    public string? StandardId;
 
-    public string ProduceClass { get; set; } = null!; //vegetables
-
-    public string ProduceType { get; set; } = null!; //Potatoes
-
-    public string? ProduceVarity { get; set; } //Lady roseta
-
-
-
-
-
-
-    //IOTA message
-    public string? MessageId { get; set; } = null!;
+   
 
 }

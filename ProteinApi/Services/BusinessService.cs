@@ -4,11 +4,11 @@ using MongoDB.Driver;
 
 namespace ProteinApi.Services;
 
-public class ProduceService
+public class BusinessService
 {
-    private readonly IMongoCollection<Produce> _produceCollection;
+    private readonly IMongoCollection<Business> _businessCollection;
 
-    public ProduceService(
+    public BusinessService(
         IOptions<ProteinIDatabaseSettings> proteinIDatabaseSettings)
     {
         var mongoClient = new MongoClient(
@@ -17,24 +17,24 @@ public class ProduceService
         var mongoDatabase = mongoClient.GetDatabase(
             proteinIDatabaseSettings.Value.DatabaseName);
 
-        _produceCollection = mongoDatabase.GetCollection<Produce>(
-            proteinIDatabaseSettings.Value.ProduceCollectionName);
+        _businessCollection = mongoDatabase.GetCollection<Business>(
+            proteinIDatabaseSettings.Value.BusinessCollectionName);
     }
 
-    public async Task<List<Produce>> GetAsync() =>
-        await _produceCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Business>> GetAsync() =>
+        await _businessCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Produce?> GetAsync(string id) =>
-        await _produceCollection.Find(x => x.ProduceId == id).FirstOrDefaultAsync();
+    public async Task<Business?> GetAsync(string id) =>
+        await _businessCollection.Find(x => x.BusinessId == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Produce newProduce) =>
-        await _produceCollection.InsertOneAsync(newProduce);
+    public async Task CreateAsync(Business newBusiness) =>
+        await _businessCollection.InsertOneAsync(newBusiness);
 
-    public async Task UpdateAsync(string id, Produce updatedProduce) =>
-        await _produceCollection.ReplaceOneAsync(x => x.ProduceId == id, updatedProduce);
+    public async Task UpdateAsync(string id, Business updatedBusiness) =>
+        await _businessCollection.ReplaceOneAsync(x => x.BusinessId == id, updatedBusiness);
 
     public async Task RemoveAsync(string id) =>
-        await _produceCollection.DeleteOneAsync(x => x.ProduceId == id);
+        await _businessCollection.DeleteOneAsync(x => x.BusinessId == id);
 }
 
 

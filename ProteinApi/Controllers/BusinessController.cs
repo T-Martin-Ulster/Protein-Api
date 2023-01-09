@@ -10,41 +10,64 @@ namespace ProteinApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProduceController : ControllerBase
+public class BusinessController : ControllerBase
 {
-    private readonly ProduceService _produceService;
+    private readonly BusinessService _businessService;
 
-    public ProduceController(ProduceService produceService) =>
-        _produceService = produceService;
+    public BusinessController(BusinessService businessService) =>
+        _businessService = businessService;
 
     [HttpGet]
-    public async Task<List<Produce>> Get() =>
-        await _produceService.GetAsync();
+    public async Task<List<Business>> Get() =>
+        await _businessService.GetAsync();
 
     [HttpGet("{id:length(24)}")]
-    public async Task<ActionResult<Produce>> Get(string id)
+    public async Task<ActionResult<Business>> Get(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var business = await _businessService.GetAsync(id);
 
-        if (produce is null)
+        if (business is null)
         {
             return NotFound();
         }
 
-        return produce;
+        return business;
+    }
+
+    [HttpGet("{id:length(24), password:length(24)}")]
+    public async Task<ActionResult<Business>> Get(string id, string password)
+    {
+        var business = await _businessService.GetAsync(id);
+
+        if (business is null){
+            return NotFound();
+        }
+        else if (business.UserPassword == password)
+        {
+            return StatusCode(202, "Password accepted");
+        }
+        else
+        {
+            return StatusCode(401, "Username or Password inccorect");
+        }
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(Produce newProduce)
+    public async Task<IActionResult> Post(Business newBusiness)
     {
+        Business tempBusiness = newBusiness;
 
-        string json = Newtonsoft.Json.JsonConvert.SerializeObject(newProduce);
+        tempBusiness.BusinessId = "Redacted";
+
+        tempBusiness.UserPassword = "Redacted";
+
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(tempBusiness);
 
         string filename = Path.Combine(Environment.CurrentDirectory, @"Scripts/message_post");
 
         string tangelPath = Globals.tanglePath;
 
-        string cParams = tangelPath + " " + "Produce" + " " + json;
+        string cParams = tangelPath + " " + "Business" + " " + json;
 
         //Runs Exe file
         var proc = new Process();
@@ -63,11 +86,11 @@ public class ProduceController : ControllerBase
 
         if (output != null)
         {
-            newProduce.MessageId = output;
+            newBusiness.MessageId = output;
 
-            await _produceService.CreateAsync(newProduce);
+            await _businessService.CreateAsync(newBusiness);
 
-            return CreatedAtAction(nameof(Get), new { id = newProduce.ProduceId }, newProduce);
+            return CreatedAtAction(nameof(Get), new { id = newBusiness.BusinessId }, newBusiness);
 
         }
 
@@ -76,18 +99,18 @@ public class ProduceController : ControllerBase
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, Produce updatedProduce)
+    public async Task<IActionResult> Update(string id, Business updatedBusiness)
     {
-        var produce = await _produceService.GetAsync(id);
+        var business = await _businessService.GetAsync(id);
 
-        if (produce is null)
+        if (business is null)
         {
             return NotFound();
         }
 
-        updatedProduce.ProduceId = produce.ProduceId;
+        updatedBusiness.BusinessId = business.BusinessId;
 
-        await _produceService.UpdateAsync(id, updatedProduce);
+        await _businessService.UpdateAsync(id, updatedBusiness);
 
         return NoContent();
     }
@@ -95,14 +118,14 @@ public class ProduceController : ControllerBase
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var produce = await _produceService.GetAsync(id);
+        var business = await _businessService.GetAsync(id);
 
-        if (produce is null)
+        if (business is null)
         {
             return NotFound();
         }
 
-        await _produceService.RemoveAsync(id);
+        await _businessService.RemoveAsync(id);
 
         return NoContent();
     }
